@@ -1,0 +1,29 @@
+{
+  "name": "moog-graze",
+  "version": "0.0.1",
+  "description": "Interact with Incident.MOOG via Graze (ReST)",
+  "main": "./lib/moog-graze",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moogsoft/moog-graze.git"
+  },
+  "keywords": [
+    "moog",
+    "incident.MOOG",
+    "graze",
+    "REST"
+  ],
+  "author": "Moogsoft <stephen@moogsoft.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/moogsoft/moog-graze/issues"
+  },
+  "homepage": "https://github.com/moogsoft/moog-graze",
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-jsdoc": "^0.5.7"
+  }
+}

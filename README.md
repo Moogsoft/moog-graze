@@ -3,7 +3,7 @@
 ## Incident.MOOG Graze ReSTfull Client for Node.js
 
 
-[![NPM](http://img.shields.io/npm/v/moog-graze.svg)](https://www.npmjs.org/package/moog-graze) [![Code Climate](https://codeclimate.com/github/Moogsoft/moog-graze/badges/gpa.svg)](https://codeclimate.com/github/Moogsoft/moog-graze)
+[![NPM](http://img.shields.io/npm/v/moog-graze.svg)](https://www.npmjs.org/package/moog-graze) [![Code Climate](https://codeclimate.com/github/Moogsoft-stephen/moog-graze/badges/gpa.svg)](https://codeclimate.com/github/Moogsoft/moog-graze)
 
 [![NPM](https://nodei.co/npm/moog-graze.png?downloads=true)](https://nodei.co/npm/moog-graze/)
 
@@ -65,12 +65,12 @@ var grazeRest = moog.grazeREST(options);
 
 ### Submit a request
 
-Very simple to now submit a request to the Graze
+Very simple to submit a request to the Graze
 
 ```javascript
 
-moogEvent.description = 'My new description';
 // example to get the detail for a situation.
+//
 grazeRest.getSituationDetails(situationId,callback());
 
 ```

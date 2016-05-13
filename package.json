@@ -25,5 +25,8 @@
   "devDependencies": {
     "grunt": "*",
     "grunt-jsdoc": "^0.5.7"
+  },
+  "dependencies": {
+    "request": "^2.72.0"
   }
 }

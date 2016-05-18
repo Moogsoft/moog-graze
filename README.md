@@ -24,13 +24,12 @@ $ npm install moog-graze
 ### Create a connection
 
  Create a connection to the Graze ReST (You need a user with the Grazer role)
- MoogREST(options)
 
  options is an object containing connection specific settings
 
 ```javascript
 
-var grazeRest = require('moog-graze').GrazeREST({'url':'https://hostname:8080','authUser':'my_user', 'authPass':'my_password'});
+var graze = require('../lib/moog-graze.js')({hostname: 'moogtest','grazeUser':'my_user', 'grazePass':'my_password'});
 
 ```
 
@@ -59,7 +58,7 @@ graze.setOps({hostname: 'newtesthost',
     'caCert': '<a certificate in PEM format>',
     'cert': '<a certificate in PEM format>',
     'rejectUnauthorized': false
-    };
+    });
 
 // Get a copy of the current options 
 //

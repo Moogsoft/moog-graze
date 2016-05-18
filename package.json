@@ -4,7 +4,7 @@
   "description": "Interact with Incident.MOOG via Graze (ReST)",
   "main": "./lib/moog-graze",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/mocha*"
   },
   "repository": {
     "type": "git",
@@ -24,9 +24,13 @@
   "homepage": "https://github.com/moogsoft/moog-graze",
   "devDependencies": {
     "grunt": "*",
-    "grunt-jsdoc": "^0.5.7"
+    "grunt-jsdoc": "^0.5.7",
+    "chai": "*",
+    "chalk": "*"
   },
   "dependencies": {
+    "debug": "^2.2.0",
+    "https-proxy-agent": "^1.0.0",
     "request": "^2.72.0"
   }
 }

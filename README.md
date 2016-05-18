@@ -36,55 +36,58 @@ var grazeRest = require('moog-graze').GrazeREST({'url':'https://hostname:8080','
 
 The use of TLS (https) is mandatory
 
-To pass a server crt file pass the parameter options.certFile as a file path to the server crt.
+To pass a server crt pass the parameter options.cert as a cert in PEM format
 
-To pass a client crt file use options.caFile as the path, if you want a client cert you must also pass a server cert.
+To pass a client key use options.key as cert in PEM format, you must also pass a server cert.
 
-To provide a ca certificate (self signed)
+To provide a ca certificate (self signed) or a ca as a valid root (some common root certificates are included)
 
-To provide a ca as a valid root
-
-To bypass root ca checking (insecure TLS/SSL)
+To bypass root ca checking (insecure TLS/SSL for self signed)
+rejectUnauthorized: false
 
 ````javascript
 
-var moog = require('moog-graze');
+// Pass the options as an object on init
+//
+var graze = require('../lib/moog-graze.js')({hostname: 'moogtest'});
 
-// Set the options to your specific configuration.
-var options = {'url':'https://hostname:8080',
-    'authUser':'graze',
-    'authPass':'graze',
-    'certFile' : '../ssl/server.crt',
-    'caFile' : '../ssl/client.crt'
+// Or set the options to your specific configuration.
+//
+graze.setOps({hostname: 'newtesthost',
+    'authUser': 'graze',
+    'authPass': 'graze',
+    'caCert': '<a certificate in PEM format>',
+    'cert': '<a certificate in PEM format>',
+    'rejectUnauthorized': false
     };
 
-// Init a connection object
-var grazeRest = moog.grazeREST(options);
+// Get a copy of the current options 
+//
+var opts = graze.getOps();
 
 ````
 
 ### Submit a request
 
-Very simple to submit a request to the Graze
+Very simple to submit a request to a Graze endpoint
 
 ```javascript
 
 // example to get the detail for a situation.
 //
-grazeRest.getSituationDetails(situationId,callback());
+graze.getSituationDetails(situationId,callback());
 
 ```
 
 ```javascript
 
-grazeRest.getSituationDetails(situationId, function (res, rtn) {
-    if (rtn == 200) {
-        console.log('grazeRest message sent, return code: ' + rtn);
-        console.log('grazeRest result: ' + res.message);
+graze.getSituationDetails(situationId, function (err, data) {
+    if (err !== 'OK') {
+        console.log('graze message sent, return code: ' + err);
+        console.log('graze result: ' + data);
         process.exit(0);
     } else {
-        console.log('grazeRest - ' + rtn);
-        console.log('grazeRest - ' + res);
+        console.log('graze Situation details: ' + util.inspect(data));
         process.exit(1);
     }
 });

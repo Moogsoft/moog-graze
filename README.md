@@ -29,7 +29,7 @@ $ npm install moog-graze
 
 ```javascript
 
-var graze = require('../lib/moog-graze.js')({hostname: 'moogtest','grazeUser':'my_user', 'grazePass':'my_password'});
+var graze = require('moog-graze')({hostname: 'moogtest','grazeUser':'my_user', 'grazePass':'my_password'});
 
 ```
 
@@ -48,7 +48,7 @@ rejectUnauthorized: false
 
 // Pass the options as an object on init
 //
-var graze = require('../lib/moog-graze.js')({hostname: 'moogtest'});
+var graze = require('moog-graze')({hostname: 'moogtest'});
 
 // Or set the options to your specific configuration.
 //

@@ -4,6 +4,9 @@ logs
 *.log
 npm-debug.log*
 
+## Temp or local testing
+moog-graze-orig.js
+
 # Runtime data
 pids
 *.pid

@@ -1,6 +1,6 @@
 {
   "name": "moog-graze",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Interact with Incident.MOOG via Graze (ReST)",
   "main": "./lib/moog-graze",
   "scripts": {
@@ -24,13 +24,11 @@
   "homepage": "https://github.com/moogsoft/moog-graze",
   "devDependencies": {
     "grunt": "*",
-    "grunt-jsdoc": "^0.5.7",
-    "chai": "*",
-    "chalk": "*"
+    "grunt-jsdoc": "*",
+    "chai": "*"
   },
   "dependencies": {
     "debug": "^2.2.0",
-    "https-proxy-agent": "^1.0.0",
-    "request": "^2.72.0"
+    "https-proxy-agent": "^1.0.0"
   }
 }

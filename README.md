@@ -1,6 +1,6 @@
 ![Moogsoft Logo](https://www.moogsoft.com/wp-content/uploads/2015/06/logo-moogsoft.png)
 
-## Incident.MOOG Graze ReSTfull Client for Node.js
+## Incident.MOOG Graze ReSTful Client for Node.js
 
 
 [![NPM](http://img.shields.io/npm/v/moog-graze.svg)](https://www.npmjs.org/package/moog-graze) [![Code Climate](https://codeclimate.com/github/Moogsoft/moog-graze/badges/gpa.svg)](https://codeclimate.com/github/Moogsoft/moog-graze)

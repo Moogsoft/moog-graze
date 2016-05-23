@@ -33,16 +33,16 @@ var graze = require('moog-graze')({hostname: 'moogtest','grazeUser':'my_user', '
 
 ```
 
-The use of TLS (https) is mandatory
+ The use of TLS (https) is mandatory
 
-To pass a server crt pass the parameter options.cert as a cert in PEM format
+ To pass a server crt pass the parameter options.cert as a cert in PEM format
 
-To pass a client key use options.key as cert in PEM format, you must also pass a server cert.
+ To pass a client key use options.key as cert in PEM format, you must also pass a server cert.
 
-To provide a ca certificate (self signed) or a ca as a valid root (some common root certificates are included)
+ To provide a ca certificate (self signed) or a ca as a valid root (some common root certificates are included)
 
-To bypass root ca checking (insecure TLS/SSL for self signed)
-rejectUnauthorized: false
+ To bypass root ca checking (insecure TLS/SSL for self signed)
+ rejectUnauthorized: false
 
 ````javascript
 
@@ -68,7 +68,7 @@ var opts = graze.getOps();
 
 ### Submit a request
 
-Very simple to submit a request to a Graze endpoint
+ Very simple to submit a request to a Graze endpoint
 
 ```javascript
 
@@ -78,7 +78,7 @@ graze.getSituationDetails(situationId,callback());
 
 ```
 
-All callbacks provide err (http code) and data (payload or more error details)
+ All callbacks provide err (http code) and data (payload or more error details)
 
 ```javascript
 
@@ -93,4 +93,4 @@ graze.getSituationDetails(situationId, function (err, data) {
 
 ```
 
-For sull details of the API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)
+ For sull details of the API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)

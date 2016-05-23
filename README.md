@@ -13,7 +13,7 @@ Allows connecting to the Incident.MOOG ReST API (Called Graze) and interacting w
 - Provides a simplified abstraction
 - Provides for automated authentication
 - Provides support for the latest v1 specification
-- Will handle auth failure (401) and retry activity
+- Will handle auth failure and retry activity
 
 ## Installation
 

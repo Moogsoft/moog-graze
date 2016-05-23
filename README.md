@@ -78,17 +78,19 @@ graze.getSituationDetails(situationId,callback());
 
 ```
 
+All callbacks provide err (http code) and data (payload or more error details)
+
 ```javascript
 
 graze.getSituationDetails(situationId, function (err, data) {
-    if (err !== 'OK') {
+    if (err !== 200) {
         console.log('graze message sent, return code: ' + err);
         console.log('graze result: ' + data);
-        process.exit(0);
     } else {
         console.log('graze Situation details: ' + util.inspect(data));
-        process.exit(1);
     }
 });
 
 ```
+
+For sull details of the API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)

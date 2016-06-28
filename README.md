@@ -35,9 +35,9 @@ var graze = require('moog-graze')({hostname: 'moogtest','grazeUser':'my_user', '
 
  The use of TLS (https) is mandatory
 
- To pass a server crt pass the parameter options.cert as a cert in PEM format
+ To pass a server certificate pass the parameter options.cert in PEM format
 
- To pass a client key use options.key as cert in PEM format, you must also pass a server cert.
+ To pass a client key use options.key as certificate in PEM format, you must also pass a server certificate.
 
  To provide a ca certificate (self signed) or a ca as a valid root (some common root certificates are included)
 
@@ -93,4 +93,4 @@ graze.getSituationDetails(situationId, function (err, data) {
 
 ```
 
- For sull details of the API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)
+ For full details of the Graze API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)

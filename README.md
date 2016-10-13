@@ -92,5 +92,10 @@ graze.getSituationDetails(situationId, function (err, data) {
 });
 
 ```
+##Tests
+ There are a set of Mocha tests that can be run against an instance, you will need a number of alets
+ and situations and a team with name testteam.
+ 
+ Last tested against 5.2.0.
 
  For full details of the Graze API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)

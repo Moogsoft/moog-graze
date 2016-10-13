@@ -9,18 +9,25 @@
 
 var https = require('https');
 var util = require('util');
+var graze = require('../lib/moog-graze.js')({hostname: 'moogtest', port: 0});
 
 var connectionObject = {};
 connectionObject.authUser = 'graze';
 connectionObject.authPass = 'graze';
 connectionObject.authRetry = 3;
-connectionObject.authURI = 'https://moogtest:8080/graze/v1/authenticate';
+connectionObject.authURI = 'https://moogtest/graze/v1/authenticate';
 
 var retryCount = 0;
 
 
 authenticate().then(function(response) {
     console.log("Top level Success!", response);
+    // put test calls here
+    graze.getAlertDetails(2, function (err, data) {
+        console.log('Return data from getAlertDetails '+util.inspect(data));
+        console.log('Return error from getAlertDetails '+util.inspect(err));
+    });
+    // end of test calls
 }, function(error) {
     console.error("Top level Failed!", error);
 });
@@ -41,7 +48,7 @@ function authenticate() {
 
         var grazeLoginOpts = {
             host 	: "moogtest",
-            port 	: 8080,
+            //port 	: 0,
             path 	: grazeAuthPath,
             method 	: 'GET',
             headers : grazeLoginHeaders,

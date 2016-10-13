@@ -8,7 +8,11 @@ var debugDetail = require('debug')('verbose');
 var chai = require('chai'),
     expect = chai.expect;
 
-var hostname = process.env.HOSTNAME || 'moog';
+var hostName = process.env.HOSTNAME || 'moogtest';
+var hostPort = process.env.PORT || 8080;
+
+// Hold the IDs of any new situation that are created
+var newSits = [];
 
 // Start testing!
 //
@@ -16,8 +20,6 @@ console.log('Starting Mocha tests \x1b[31;1m' + 'NOW\x1b[0m');
 
 
 describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+API', function () {
-    // Hold the IDs of any new situation that is created
-    var newSits = [];
 
     debug('* Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+API');
 
@@ -99,8 +101,8 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.addAlertCustomInfo', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
-        it('should add custom_info to an alert (testing against an instance called ' + hostname + ')', function (done) {
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
+        it('should add custom_info to an alert (testing against an instance called ' + hostName + ')', function (done) {
             var customInfo = {field1: 'value1', num1: 99, obj1: {obj1_1: 'a string'}};
             graze.addAlertCustomInfo(2, customInfo, function (err, data) {
                 try {
@@ -112,8 +114,8 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error (testing against an instance called ' + hostname + ')', function (done) {
-            var unparseable = "{field1: 'value1', num1: 99, obj1: {'obj1 1: 'a string'}";
+        it('should return an error (testing against an instance called ' + hostName + ')', function (done) {
+            var unparseable = "{field2: 'value2', num2: 666, obj2: {'obj2 2: 'a string'}";
             graze.addAlertCustomInfo(1, unparseable, function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -124,17 +126,20 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return the previously updated alert with new custom_info (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return the previously updated alert with new custom_info (testing against an instance called ' + hostName + ')', function (done) {
+            console.log('Send test');
             graze.getAlertDetails(2, function (err, data) {
+                console.log(util.inspect(data));
                 try {
-                    expect(data).to.be.an('object');
-                    expect(data).to.contain.all.keys(['custom_info']);
-                    expect(data.custom_info).to.be.an('object');
                     expect(err).to.equal(200);
+                    expect(data).to.be.an('object');
+                    expect(data).to.contain.all.keys(['custom_info', 'alert_id', 'state', 'class']);
+                    expect(data.custom_info).to.be.an('object');
                     expect(data.custom_info).to.contain.all.keys(['field1', 'num1', 'obj1']);
                     expect(data.custom_info.num1).to.be.a('number');
                     expect(data.custom_info.obj1).to.be.an('object');
                     expect(data.custom_info.obj1.obj1_1).to.be.a('string');
+                    console.log('Done all tests');
                     done();
                 }
                 catch (e) {
@@ -145,11 +150,11 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.addAlertToSituation', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var alertId = 12;
         var sitId = 2;
         var invalidSitId = 10000;
-        it('should add an alert (' + alertId + ') to a situation (' + sitId + ') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add an alert (' + alertId + ') to a situation (' + sitId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.addAlertToSituation(alertId, sitId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -160,7 +165,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error as the situation (' + invalidSitId + ') does not exist (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an error as the situation (' + invalidSitId + ') does not exist (testing against an instance called ' + hostName + ')', function (done) {
             graze.addAlertToSituation(alertId, invalidSitId, function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -171,7 +176,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return the previously updated situation (' + sitId + ') with new alert id added (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return the previously updated situation (' + sitId + ') with new alert id added (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationAlertIds(sitId, false, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -190,12 +195,12 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.addProcess', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var name = 'myNewProcess';
         var description = 'My New Process Description';
         var sitnId = 2;
-        it('should add process (' + name + ') to the database (testing against an instance called ' + hostname + ')', function (done) {
-            var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        it('should add process (' + name + ') to the database (testing against an instance called ' + hostName + ')', function (done) {
+            var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
             graze.addProcess(name, description, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -206,7 +211,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error no name passed (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an error no name passed (testing against an instance called ' + hostName + ')', function (done) {
             graze.addProcess('', description, function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -217,7 +222,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('add the previously inserted process (' + name + ') to a situation (' + sitnId + ') (testing against an instance called ' + hostname + ')', function (done) {
+        it('add the previously inserted process (' + name + ') to a situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.setSituationProcesses(sitnId, name, '', function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -228,8 +233,8 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('is the previously inserted process (' + name + ') in situation (' + sitnId + ') (testing against an instance called ' + hostname + ')', function (done) {
-            var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        it('is the previously inserted process (' + name + ') in situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
+            var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
             graze.getSituationProcesses(sitnId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -244,11 +249,11 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.addService', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var name = 'myNewService';
         var description = 'My New Service Description';
         var sitnId = 2;
-        it('should add service (' + name + ') to the database (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add service (' + name + ') to the database (testing against an instance called ' + hostName + ')', function (done) {
             graze.addService(name, description, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -259,7 +264,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error no name passed (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an error no name passed (testing against an instance called ' + hostName + ')', function (done) {
             graze.addService('', description, function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -270,7 +275,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('add the previously inserted service (' + name + ') to a situation (' + sitnId + ') (testing against an instance called ' + hostname + ')', function (done) {
+        it('add the previously inserted service (' + name + ') to a situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.setSituationServices(sitnId, name, '', function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -281,8 +286,8 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('is the previously inserted service (' + name + ') in situation (' + sitnId + ') (testing against an instance called ' + hostname + ')', function (done) {
-            var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        it('is the previously inserted service (' + name + ') in situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
+            var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
             graze.getSituationServices(sitnId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -297,14 +302,14 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.addSigCorrelationInfo', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 3;
         var serviceName = 'My Testsing Service';
         var resourceId = 'My Test ID';
-        
-        it('should add correlation info for a situation (testing against an instance called ' + hostname +
+
+        it('should add correlation info for a situation (testing against an instance called ' + hostName +
             ') (need to check in DB as no call to see if it worked)', function (done) {
-            
+
             graze.addSigCorrelationInfo(sitnId, serviceName, resourceId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -315,7 +320,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error, no service provided (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an error, no service provided (testing against an instance called ' + hostName + ')', function (done) {
             graze.addSigCorrelationInfo(sitnId, '', resourceId, function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -326,7 +331,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error, no resource id provided (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an error, no resource id provided (testing against an instance called ' + hostName + ')', function (done) {
             graze.addSigCorrelationInfo(sitnId, serviceName, '', function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -340,10 +345,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.addSituationCustomInfo', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 4;
-        
-        it('should add custom_info to a situation (testing against an instance called ' + hostname + ')', function (done) {
+
+        it('should add custom_info to a situation (testing against an instance called ' + hostName + ')', function (done) {
             var customInfo = {field1: 'sitvalue1', num1: 999, obj1: {obj1_1: 'a sit string'}};
             graze.addSituationCustomInfo(sitnId, customInfo, function (err, data) {
                 try {
@@ -355,7 +360,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an error (testing against an instance called ' + hostName + ')', function (done) {
             var unparseable = "{field1: 'value1', num1: 99, obj1: {'obj1 1: 'a string'}";
             graze.addSituationCustomInfo(sitnId, unparseable, function (err, data) {
                 try {
@@ -367,7 +372,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return the previously updated situation with new custom_info (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return the previously updated situation with new custom_info (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationDetails(sitnId, function (err, data) {
                 try {
                     expect(data).to.be.an('object');
@@ -388,12 +393,12 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.addThreadEntry', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var threadName = 'Support';
         var threadEntry = 'Test thred entry \n with 2 lines';
         var sitnId = 4;
 
-        it('should add a thread entry to a situation ('+sitnId+') thread ('+threadName+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add a thread entry to a situation (' + sitnId + ') thread (' + threadName + ') (testing against an instance called ' + hostName + ')', function (done) {
             var customInfo = {field1: 'value1', num1: 99, obj1: {obj1_1: 'a string'}};
             graze.addThreadEntry(sitnId, threadName, threadEntry, function (err, data) {
                 try {
@@ -405,7 +410,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should create the thread (DUMMY) and post to it in situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should create the thread (DUMMY) and post to it in situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             threadName = 'DUMMY';
 
             graze.addThreadEntry(sitnId, threadName, threadEntry, function (err, data) {
@@ -421,10 +426,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.closeAlert', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var alertId = 10;
 
-        it('should close an alert ('+alertId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should close an alert (' + alertId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.closeAlert(alertId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -435,7 +440,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an alert ('+alertId+') that is closed (status 9) (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an alert (' + alertId + ') that is closed (status 9) (testing against an instance called ' + hostName + ')', function (done) {
             graze.getAlertDetails(alertId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -450,10 +455,13 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.closeSituation', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
-        var sitnId = 6;
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
+        var sitnId = 69;
 
-        it('should close a situation ('+sitnId+') but no alerts (testing against an instance called ' + hostname + ')', function (done) {
+        it('should close a situation (' + sitnId + ') but no alerts (testing against an instance called ' + hostName + ')', function (done) {
+            // Close takes some time!
+            this.timeout(5000);
+
             graze.closeSituation(sitnId, 0, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -464,7 +472,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return the status of situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return the status of situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationDetails(sitnId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -472,6 +480,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                     done();
                 }
                 catch (e) {
+                    debugDetail('Data: ' + util.inspect(data, {color: true}));
                     done(e);
                 }
             });
@@ -479,10 +488,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.createSituation', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var description = 'New situation from mocha-test-graze testing';
 
-        it('should add a new situation and return the ID (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add a new situation and return the ID (testing against an instance called ' + hostName + ')', function (done) {
 
             graze.createSituation(description, function (err, data) {
                 try {
@@ -500,11 +509,11 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.createThread', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var threadName = 'my new testThread';
         var sitnId = 2;
 
-        it('should add a thread ('+threadName+') to situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add a thread (' + threadName + ') to situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.createThread(sitnId, threadName, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -518,13 +527,13 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getActiveSituationIds', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
 
-        it('should add custom_info to an alert (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add custom_info to an alert (testing against an instance called ' + hostName + ')', function (done) {
             graze.getActiveSituationIds(function (err, data) {
                 try {
                     expect(err).to.equal(200);
-                    expect(data).to.contain.all.keys(['total_situations','sit_ids']);
+                    expect(data).to.contain.all.keys(['total_situations', 'sit_ids']);
                     expect(data.total_situations).to.be.a('number');
                     expect(data.sit_ids).to.be.an('array');
                     done();
@@ -537,16 +546,17 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getAlertDetail', function () {
-        it('should return an alert detail object (testing against an instance called ' + hostname + ')', function (done) {
-            var graze = require('../lib/moog-graze.js')({hostname: hostname});
-            graze.getAlertDetails(1, function (err, data) {
+        it('should return an alert detail object (testing against an instance called ' + hostName + ')', function (done) {
+            var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
+            graze.getAlertDetails(2, function (err, data) {
+                debug('Data returned: ' + util.inspect(data));
                 try {
+                    expect(err).to.equal(200);
                     expect(data).to.be.an('object');
                     expect(data).to.contain.all.keys(['alert_id', 'severity', 'manager', 'custom_info']);
-                    expect(data.alert_id).to.equal(1);
+                    expect(data.alert_id).to.equal(2);
                     expect(data.severity).to.be.a('number');
                     expect(data.custom_info).to.be.an('object');
-                    expect(err).to.equal(200);
                     done();
                 }
                 catch (e) {
@@ -554,8 +564,8 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return "unautorized" (testing against an instance called ' + hostname + ')', function (done) {
-            var graze = require('../lib/moog-graze.js')({hostname: hostname, grazePass: 'rubbish'});
+        it('should return "unautorized" (testing against an instance called ' + hostName + ')', function (done) {
+            var graze = require('../lib/moog-graze.js')({hostname: hostName, grazePass: 'rubbish'});
             graze.getAlertDetails(1, function (err, data) {
                 try {
                     expect(data).to.be.a('string');
@@ -569,12 +579,13 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('alert should not be found (testing against an instance called ' + hostname + ' with an alert_id that is not available)', function (done) {
-            var graze = require('../lib/moog-graze.js')({hostname: hostname});
-            graze.getAlertDetails(1000, function (err, data) {
+        it('alert should not be found (testing against an instance called ' + hostName + ' with an alert_id that is not available)', function (done) {
+            var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
+            graze.getAlertDetails(100000, function (err, data) {
                 console.log('Data returned: err:' + err + ' data:' + util.inspect(data));
                 try {
-                    expect(data).to.be.a('string');
+                    expect(data).to.be.an('object');
+                    expect(data.description).to.be.a('string');
                     expect(err).to.be.a('number');
                     expect(err).to.equal(200);
                     done();
@@ -587,14 +598,14 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSituationAlertIds', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 2;
 
-        it('should get a list of unique alerts for situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should get a list of unique alerts for situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationAlertIds(sitnId, true, function (err, data) {
                 try {
                     expect(err).to.equal(200);
-                    expect(data).to.contain.all.keys(['total_alerts','alert_ids']);
+                    expect(data).to.contain.all.keys(['total_alerts', 'alert_ids']);
                     expect(data.total_alerts).to.be.a('number');
                     expect(data.alert_ids).to.be.an('array');
                     done();
@@ -605,11 +616,11 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
             });
         });
 
-        it('should get a list of all alerts for situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should get a list of all alerts for situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationAlertIds(sitnId, false, function (err, data) {
                 try {
                     expect(err).to.equal(200);
-                    expect(data).to.contain.all.keys(['total_alerts','alert_ids']);
+                    expect(data).to.contain.all.keys(['total_alerts', 'alert_ids']);
                     expect(data.total_alerts).to.be.a('number');
                     expect(data.alert_ids).to.be.an('array');
                     done();
@@ -622,15 +633,15 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSituationDescription', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 4;
-        
-        it('should get a description for a situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+
+        it('should get a description for a situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationDescription(sitnId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
                     expect(data).to.be.an('object');
-                    expect(data).to.contain.all.keys(['sitn_id','description']);
+                    expect(data).to.contain.all.keys(['sitn_id', 'description']);
                     expect(data.description).to.be.a('string');
                     done();
                 }
@@ -639,8 +650,8 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error (testing against an instance called ' + hostname + ')', function (done) {
-            var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        it('should return an error (testing against an instance called ' + hostName + ')', function (done) {
+            var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
             graze.getSituationDescription('', function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -654,17 +665,17 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSituationDetails', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 4;
 
-        it('should get details for a situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should get details for a situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationDetails(sitnId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
                     expect(data).to.be.an('object');
-                    expect(data).to.contain.all.keys(['category','created_at','custom_info','description',
-                        'external_priority','first_event_time','last_event_time','last_state_change',
-                        'moderator_id','sit_id','status','story_id','superseded_by','total_alerts','total_unique_alerts']);
+                    expect(data).to.contain.all.keys(['category', 'created_at', 'custom_info', 'description',
+                        'external_priority', 'first_event_time', 'last_event_time', 'last_state_change',
+                        'moderator_id', 'sit_id', 'status', 'story_id', 'superseded_by', 'total_alerts', 'total_unique_alerts']);
                     expect(data.category).to.be.a('string');
                     expect(data.created_at).to.be.a('number');
                     expect(data.external_priority).to.be.a('number');
@@ -685,7 +696,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should return an error no situation id passed (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return an error no situation id passed (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationDetails('', function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -699,10 +710,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSituationHosts', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 4;
-        
-        it('should get a list of hosts for all alerts in a situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+
+        it('should get a list of hosts for all alerts in a situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationHosts(sitnId, false, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -714,7 +725,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should get a list of hosts for unique alerts in a situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should get a list of hosts for unique alerts in a situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationHosts(sitnId, true, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -729,10 +740,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSituationProcesses', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 2;
 
-        it('should return the list of processes in situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return the list of processes in situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationProcesses(sitnId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -747,10 +758,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSituationServices', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 2;
 
-        it('should return the list of services in situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return the list of services in situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSituationServices(sitnId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -765,9 +776,9 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSystemStatus', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
 
-        it('should return the system status (testing against an instance called ' + hostname + ')', function (done) {
+        it('should return the system status (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSystemStatus(function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -783,14 +794,14 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getSystemSummary', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
 
-        it('should the system summary (testing against an instance called ' + hostname + ')', function (done) {
+        it('should the system summary (testing against an instance called ' + hostName + ')', function (done) {
             graze.getSystemSummary(function (err, data) {
                 try {
                     expect(err).to.equal(200);
                     expect(data).to.be.an('object');
-                    expect(data.system_summary).to.contain.all.keys(['total_events','alert_count','total_sitns']);
+                    expect(data.system_summary).to.contain.all.keys(['total_events', 'alert_count', 'total_sitns']);
                     done();
                 }
                 catch (e) {
@@ -801,14 +812,14 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getTeamSituationIds', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var teamName = 'testteam';
 
-        it('should get the situations for a team ('+teamName+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should get the situations for a team (' + teamName + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getTeamSituationIds(teamName, function (err, data) {
                 try {
                     expect(err).to.equal(200);
-                    expect(data).to.contain.all.keys(['total_situations','sit_ids']);
+                    expect(data).to.contain.all.keys(['total_situations', 'sit_ids']);
                     expect(data.total_situations).to.be.a('number');
                     expect(data.sit_ids).to.be.an('array');
                     done();
@@ -818,7 +829,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
                 }
             });
         });
-        it('should produce an error for a dummy team name (testing against an instance called ' + hostname + ')', function (done) {
+        it('should produce an error for a dummy team name (testing against an instance called ' + hostName + ')', function (done) {
             graze.getTeamSituationIds('DUMMY', function (err, data) {
                 try {
                     expect(err).to.equal(400);
@@ -832,12 +843,12 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getThreadEntries', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 2;
         var threadName = 'Support';
 
-        it('should get thread ('+threadName+') entries from situation ('+sitnId+') use defualt start and limit ' +
-            '(testing against an instance called ' + hostname + ')', function (done) {
+        it('should get thread (' + threadName + ') entries from situation (' + sitnId + ') use defualt start and limit ' +
+            '(testing against an instance called ' + hostName + ')', function (done) {
             graze.getThreadEntries(sitnId, threadName, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -853,10 +864,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getUserInfo', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var userId = 2;
 
-        it('get the name of a user from the id ('+userId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('get the name of a user from the id (' + userId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getUserInfo(userId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -870,10 +881,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getUserRoles', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var userId = 2;
 
-        it('get the roles for a user ('+userId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('get the roles for a user (' + userId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getUserRoles(userId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -887,10 +898,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.getUserTeams', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var userId = 2;
 
-        it('get the teams for a user ('+userId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('get the teams for a user (' + userId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.getUserTeams(userId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -904,19 +915,24 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.mergeSituations', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sit1 = 2;
         var sit2 = 3;
-        var situations = [sit1,sit2];
+        var situations = [sit1, sit2];
 
-        it('should merge 2 situations ('+sit1+' and '+sit2+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should merge 2 situations (' + sit1 + ' and ' + sit2 + ') (testing against an instance called ' + hostName + ')', function (done) {
+            // Merge takes some time!
+            this.timeout(5000);
+
             graze.mergeSituations(situations, false, function (err, data) {
                 try {
                     expect(err).to.equal(200);
                     expect(data).to.be.an('object');
                     expect(data.sit_id).to.be.a('number');
-                    done();
+
+                    console.log('Adding situation ' + data.sit_id + ' to list.');
                     newSits.push(data.sit_id);
+                    done();
                 }
                 catch (e) {
                     done(e);
@@ -927,11 +943,12 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.removeAlertFromSituation', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
-        var sitId = newSits.pop() || 4;
-        var alertId = 20;
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
+        var sitId = 2;
+        var alertId = 12;
 
-        it('should remove an alert ('+alertId+') from a situation ('+sitId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should remove an alert (' + alertId + ') from a situation (' +sitId+ ') (testing against an instance called ' + hostName + ')', function (done) {
+            console.log('newSit '+newSits);
             graze.removeAlertFromSituation(alertId, sitId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -945,10 +962,10 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.resolveSituation', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitId = newSits.pop() || 6;
 
-        it('should resolve a situation ('+sitId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should resolve a situation (' + sitId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.resolveSituation(sitId, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -962,11 +979,11 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.setAlertSeverity', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var alertId = 4;
         var severity = 5;
 
-        it('should set an alert ('+alertId+') severity to ('+severity+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should set an alert (' + alertId + ') severity to (' + severity + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.setAlertSeverity(alertId, severity, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -980,11 +997,11 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.setSituationDescription', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitId = 3;
         var description = 'New description from testing.';
 
-        it('should set the description ('+description+') for a situation ('+sitId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should set the description (' + description + ') for a situation (' + sitId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.setSituationDescription(sitId, description, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -998,11 +1015,11 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.setSituationExternalSeverity', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 2;
         var severity = 5;
 
-        it('should set the external severity ('+severity+') for situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should set the external severity (' + severity + ') for situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.setSituationExternalSeverity(sitnId, severity, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -1016,12 +1033,12 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.setSituationProcesses', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 2;
         var process = 'myNewProcess';
         var primaryProcess = 'myNewProcess';
 
-        it('should add process ('+process+') to situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add process (' + process + ') to situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.setSituationProcesses(sitnId, process, primaryProcess, function (err, data) {
                 try {
                     expect(err).to.equal(200);
@@ -1035,12 +1052,12 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
 
     describe('graze.setSituationServices', function () {
-        var graze = require('../lib/moog-graze.js')({hostname: hostname});
+        var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
         var sitnId = 2;
         var service = 'myNewService';
         var primaryService = 'myNewService';
 
-        it('should add service ('+service+') to situation ('+sitnId+') (testing against an instance called ' + hostname + ')', function (done) {
+        it('should add service (' + service + ') to situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done) {
             graze.setSituationServices(sitnId, service, primaryService, function (err, data) {
                 try {
                     expect(err).to.equal(200);

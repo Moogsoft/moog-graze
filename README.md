@@ -55,8 +55,8 @@ var graze = require('moog-graze')({hostname: 'moogtest'});
 // Or set the options to your specific configuration.
 //
 graze.setOps({hostname: 'newtesthost',
-    'authUser': 'graze',
-    'authPass': 'graze',
+    'grazeUser': 'graze',
+    'grazePass': 'graze',
     'caCert': '<a certificate in PEM format>',
     'cert': '<a certificate in PEM format>',
     'rejectUnauthorized': false

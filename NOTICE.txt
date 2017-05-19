@@ -3,5 +3,5 @@
 ==  for the node-moog distribution.                       ==
 ============================================================
 
-node-moog Node.JS inegration for Incident.MOOG
-Copyright 2016-2016 Moogsoft Inc.
+node-moog Node.JS inegration for MOOG.AIOps
+Copyright 2016-2017 Moogsoft Inc.

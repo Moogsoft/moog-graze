@@ -1,6 +1,6 @@
 ![Moogsoft Logo](https://www.moogsoft.com/wp-content/uploads/2015/06/logo-moogsoft.png)
 
-## Incident.MOOG Graze ReSTful Client for Node.js
+## MOOG.AIOps Graze ReSTful Client for Node.js
 
 
 [![NPM](http://img.shields.io/npm/v/moog-graze.svg)](https://www.npmjs.org/package/moog-graze) [![Code Climate](https://codeclimate.com/github/Moogsoft/moog-graze/badges/gpa.svg)](https://codeclimate.com/github/Moogsoft/moog-graze)
@@ -8,12 +8,14 @@
 [![NPM](https://nodei.co/npm/moog-graze.png?downloads=true)](https://nodei.co/npm/moog-graze/)
 
 
-Allows connecting to the Incident.MOOG ReST API (Called Graze) and interacting with the Incident.MOOG platform.
+Allows connecting to the MOOG.AIOps REST API (Called Graze) and interacting with the MOOG.AIOps platform.
 
 - Provides a simplified abstraction
 - Provides for automated authentication
 - Provides support for the latest v1 specification
 - Will handle auth failure and retry activity
+
+Updated for MOOG.AIOps V6
 
 ## Installation
 
@@ -23,7 +25,7 @@ $ npm install moog-graze
 
 ### Create a connection
 
- Create a connection to the Graze ReST (You need a user with the Grazer role)
+ Create a connection to the Graze REST (You need a user with the Grazer role)
 
  options is an object containing connection specific settings
 
@@ -94,8 +96,19 @@ graze.getSituationDetails(situationId, function (err, data) {
 ```
 ##Tests
  There are a set of Mocha tests that can be run against an instance, you will need a number of alets
- and situations and a team with name testteam.
+ and situations and a team with name 'Cloud DevOps'.
  
- Last tested against 5.2.0.
+ For the new getAlertId, getSituationId and createMaintenanceWindow take a filter as an argument or as a paramter.
+ This needs to be in MOOG internal filter format, e.g.
+ 
+ ```
+ '{"op":6,"column":"internal_priority","type":"LEAF","value":[3,4,5]}'
+ ```
+ 
+ Last tested against 6.0.0
 
+###TODO
+ Add convertion of advanced query syntax to internal MOOG format
+ 
+##References 
  For full details of the Graze API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)

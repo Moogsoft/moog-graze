@@ -3,7 +3,7 @@
 ## MOOG.AIOps Graze ReSTful Client for Node.js
 
 
-[![NPM](http://img.shields.io/npm/v/moog-graze.svg)](https://www.npmjs.org/package/moog-graze) [![Code Climate](https://codeclimate.com/github/Moogsoft/moog-graze/badges/gpa.svg)](https://codeclimate.com/github/Moogsoft/moog-graze)
+[![Code Climate](https://codeclimate.com/github/Moogsoft/moog-graze/badges/gpa.svg)](https://codeclimate.com/github/Moogsoft/moog-graze)
 
 
 Allows connecting to the MOOG.AIOps REST API (Called Graze) and interacting with the MOOG.AIOps platform.

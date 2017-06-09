@@ -28,8 +28,10 @@ $ npm install moog-graze
  options is an object containing connection specific settings
 
 ```javascript
-
+// For Auth token
 var graze = require('moog-graze')({hostname: 'moogtest','grazeUser':'my_user', 'grazePass':'my_password'});
+// OR for Basic Auth
+var graze = require('moog-graze')({hostname: 'moogtest','auth':'my_user:my_password'});
 
 ```
 
@@ -53,8 +55,7 @@ var graze = require('moog-graze')({hostname: 'moogtest'});
 // Or set the options to your specific configuration.
 //
 graze.setOps({hostname: 'newtesthost',
-    'grazeUser': 'graze',
-    'grazePass': 'graze',
+    'auth': 'username:password',
     'caCert': '<a certificate in PEM format>',
     'cert': '<a certificate in PEM format>',
     'rejectUnauthorized': false
@@ -102,8 +103,23 @@ graze.getSituationDetails(situationId, function (err, data) {
  ```
  '{"op":6,"column":"internal_priority","type":"LEAF","value":[3,4,5]}'
  ```
+ ##Updates
+ Last tested against 6.1.0
+ + Basic Auth
+ + createTeam
+ + updateTeam
+ + createUser
+ + teamObj prototype
+ + userObj prototype
  
- Last tested against 6.0.0
+ 5.2.3
+ + createMaintenanceWindow
+ + getMaintenanceWindows
+ + deleteMaintenanceWindow
+ + maintenanceWindowObj prototype
+ + setAlertAcknowledgeState
+ + setSituationAcknowledgeState
+ - setSituationExternalSeverity DEPRECATED
 
 ###TODO
  Add convertion of advanced query syntax to internal MOOG format

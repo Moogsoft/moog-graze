@@ -962,6 +962,41 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     });
   });
 
+  describe('graze.createTeam', function ()
+  {
+    var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort, auth: 'graze:graze'});
+    var myTeamObj = new graze.teamObj;
+
+    myTeamObj.name = 'mytestteam' + Math.floor((Math.random() * 100) + 1);
+    myTeamObj.alertFilter = '{"left":{"op":10,"column":"source","type":"LEAF","value":"hub"},"oper":"AND","right":{"op":6,"column":"severity","type":"LEAF","value":[4,5]},"type":"BRANCH"}';
+    myTeamObj.active = true;
+    myTeamObj.services = '[]';
+    myTeamObj.sigFilter = '';
+    myTeamObj.landingPage = '';
+    myTeamObj.description = 'My Test Team';
+    myTeamObj.users = '[3]';
+
+    it('should create a team (' + JSON.stringify(myTeamObj) + ') (testing against an instance called ' + hostName + ')', function (done)
+    {
+      graze.createTeam(myTeamObj, function (err, data)
+      {
+        try
+        {
+          expect(err).to.equal(200);
+          done();
+        }
+        catch (e)
+        {
+          done(e);
+        }
+        if (data)
+        {
+          expect(data).to.contain('team_id');
+        }
+      });
+    });
+  });
+
   describe('graze.createMaintenanceWindow', function ()
   {
     var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
@@ -988,6 +1023,47 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
         catch (e)
         {
           done(e);
+        }
+      });
+    });
+  });
+
+  describe('graze.createUser', function ()
+  {
+    var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort, auth: 'graze:graze'});
+    var myUserObj = new graze.userObj;
+
+    myUserObj.username = 'testUser' + Math.floor((Math.random() * 100) + 1);
+    myUserObj.password = 'testUser';
+    myUserObj.active = true;
+    myUserObj.email = 'test@moogsoft.com';
+    myUserObj.fullName = 'The Test User';
+    myUserObj.roles = '["Super User"]';
+    myUserObj.primaryGroup = '1';
+    myUserObj.department = 1;
+    myUserObj.joined = Math.floor(Date.now() / 1000);
+    myUserObj.timezone = 'European/London';
+    myUserObj.contactNum = '12345';
+    myUserObj.sessionExpiry = 80;
+    myUserObj.competencies = '[{"name":"Generic", "ranking": 40}]';
+    myUserObj.teams = '[1]';
+
+    it('should create a user (' + JSON.stringify(myUserObj) + ') (testing against an instance called ' + hostName + ')', function (done)
+    {
+      graze.createUser(myUserObj, function (err, data)
+      {
+        try
+        {
+          expect(err).to.equal(200);
+          done();
+        }
+        catch (e)
+        {
+          done(e);
+        }
+        if (data)
+        {
+          expect(data).to.contain('user_id');
         }
       });
     });
@@ -1824,7 +1900,7 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
       });
     });
   });
-  
+
   describe('graze.setSituationAcknowledgeState', function ()
   {
     var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort});
@@ -1918,6 +1994,38 @@ describe('Graze - see the API documents at docs.moogsoft.com/display/MOOG/Graze+
     it('should add service (' + service + ') to situation (' + sitnId + ') (testing against an instance called ' + hostName + ')', function (done)
     {
       graze.setSituationServices(sitnId, service, primaryService, function (err, data)
+      {
+        try
+        {
+          expect(err).to.equal(200);
+          done();
+        }
+        catch (e)
+        {
+          done(e);
+        }
+      });
+    });
+  });
+
+  describe('graze.updateTeam', function ()
+  {
+    var graze = require('../lib/moog-graze.js')({hostname: hostName, port: hostPort, auth: 'graze:graze'});
+    var myTeamObj = new graze.teamObj;
+
+    myTeamObj.teamId = 6;
+    myTeamObj.name = 'myUpdatedtestteam' + Math.floor((Math.random() * 100) + 1);
+    myTeamObj.alertFilter = '';
+    myTeamObj.active = '';
+    myTeamObj.services = '';
+    myTeamObj.sigFilter = '';
+    myTeamObj.landingPage = '';
+    myTeamObj.description = 'My Updated Test Team';
+    myTeamObj.users = '';
+
+    it('should update a team (' + JSON.stringify(myTeamObj) + ') (testing against an instance called ' + hostName + ')', function (done)
+    {
+      graze.updateTeam(myTeamObj, function (err, data)
       {
         try
         {

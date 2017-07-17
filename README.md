@@ -104,7 +104,11 @@ graze.getSituationDetails(situationId, function (err, data) {
  '{"op":6,"column":"internal_priority","type":"LEAF","value":[3,4,5]}'
  ```
  ##Updates
- Last tested against 6.1.0
+ 6.1.3
+ + findMaintenaceWindows
+ + deleteMaintanceWindows
+
+ 6.1.0
  + Basic Auth
  + createTeam
  + updateTeam
@@ -122,7 +126,7 @@ graze.getSituationDetails(situationId, function (err, data) {
  - setSituationExternalSeverity DEPRECATED
 
 ###TODO
- Add convertion of advanced query syntax to internal MOOG format
+ Add convertion of advanced query syntax to internal MOOG format. NOT required with new SQL like options (6.1.2).
  
 ##References 
  For full details of the Graze API see [http://docs.moogsoft.com/display/MOOG/Graze+API](http://docs.moogsoft.com/display/MOOG/Graze+API)

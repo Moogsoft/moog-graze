@@ -1,5 +1,9 @@
 ![Moogsoft Logo](https://www.moogsoft.com/wp-content/uploads/2017/02/moog-logo.png)
 
+** NOTE ** 
+
+This module is no longer maintained for current releases (e.g. beyond 6.1). Moogsoft recommend using standard Node.js packages and (e.g. node-fetch), basic auth (over token based) and easier to control workflow (async/await). 
+
 ## MOOG.AIOps Graze ReSTful Client for Node.js
 
 
